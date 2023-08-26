@@ -65,7 +65,6 @@
 
 }
 
-
 img{
   height:100%;
   width:auto;
@@ -97,6 +96,6 @@ input{
   width:100%;
 }
 input:focus{
-  outline:lightblue solid;
+  outline:lightgreen solid;
   transform: scale(1.03) perspective(1px);
 }
