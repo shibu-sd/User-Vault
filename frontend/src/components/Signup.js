@@ -1,14 +1,17 @@
 import React, {useState} from 'react'
+import {useNavigate} from "react-router-dom"
 import "../styles/registerStyle.css"
 import logo from "../images/register1.jpg"
 
-const Register = () => {
+const Signup = () => {
+
+  const navigate = useNavigate();
 
   const [user, setUser] = useState({
     name : "",
     email : "",
     phone : "",
-    occupation : "",
+    work : "",
     password : "",
     cpassword : ""
   });
@@ -19,14 +22,42 @@ const Register = () => {
     name = e.target.name;
     value = e.target.value;
 
-    setUser({...user, [name]:value});
+    setUser({...user, [name]: value});
+  }
+
+  const postData = async (e) => {
+    e.preventDefault();
+
+    const {name, email, phone, work, password, cpassword} = user;
+
+    const res = await fetch("http://localhost:5000/register", {
+      method: "POST",
+      headers: {
+        "Content-Type" : "application/json"
+      },
+      body: JSON.stringify({
+        name, email, phone, work, password, cpassword
+      })
+    });
+
+    const data = await res.json();
+    if (res.status === 422 || !data){
+      window.alert("Invalid Registration");
+      console.log("Invalid Registration");
+    }
+    else{
+      window.alert("Successfully Registered");
+      console.log("Successfully Registered");
+
+      navigate('/login');
+    }
   }
 
   return (
     <div>
 
       <div className="formbody form-container">
-        <form className="fr">
+        <form className="fr" method="post">
           <h1 className="elem">Register<br /> </h1>
           <div className="item-container">
             <label htmlFor='name'> <i class="zmdi zmdi-accounts"></i> Name</label>
@@ -41,8 +72,8 @@ const Register = () => {
             <input type="number" id="phone" name="phone" className="elem" placeholder='Enter mobile no.' value={user.phone} onChange={handleInputs}/>
           </div>
           <div className='item-container'>
-            <label htmlFor='occupation'> <i class="zmdi zmdi-tag"></i> Occupation</label>
-            <input type="text" id="occupation" name="occupation" className="elem" placeholder='Enter occupation' value={user.occupation} onChange={handleInputs} />
+            <label htmlFor='work'> <i class="zmdi zmdi-tag"></i> Work</label>
+            <input type="text" id="work" name="work" className="elem" placeholder='Enter work' value={user.work} onChange={handleInputs} />
           </div>
           <div className='item-container'>
             <label htmlFor='password'> <i class="zmdi zmdi-lock-outline"></i> Password</label>
@@ -53,7 +84,7 @@ const Register = () => {
             <input type="password" id="cpassword" name="cpassword" className="elem" placeholder='Confirm password' value={user.cpassword} onChange={handleInputs} />
           </div>
           
-          <input type="button" value="Register" className="submit-btn elem" />
+          <input type="submit" name="signup" value="Register" className="submit-btn elem" onClick={postData} />
 
         </form>
         <img src={logo} alt='logo'/>
@@ -63,4 +94,4 @@ const Register = () => {
   )
 }
 
-export default Register
+export default Signup
